@@ -1,0 +1,42 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+
+version: '3'
+
+tasks:
+  default:
+    desc: Show available tasks
+    cmds:
+      - task --list
+    silent: true
+
+  serve:
+    desc: Run FastAPI server
+    cmds:
+      - uv run fastapi run src/main.py
+
+  dev:
+    desc: Run FastAPI server in development mode with reload
+    cmds:
+      - uv run fastapi dev src/main.py
+
+  db:revision:
+    desc: Create a new Alembic revision with autogenerate
+    vars:
+      MESSAGE: '{{default "update schema" .MESSAGE}}'
+    cmds:
+      - uv run alembic revision --autogenerate -m "{{.MESSAGE}}"
+
+  db:migrate:
+    desc: Apply all pending Alembic migrations
+    cmds:
+      - uv run alembic upgrade head
+
+  lint:
+    desc: Run lint checks
+    cmds:
+      - uv run ruff check .
+
+  test:
+    desc: Run test suite
+    cmds:
+      - uv run pytest
