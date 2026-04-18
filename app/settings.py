@@ -5,7 +5,7 @@ from typing import Literal
 from pydantic import BaseModel, Field, computed_field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-from src.utils.version import get_version
+from app.utils.version import get_version
 
 
 class App(BaseModel):

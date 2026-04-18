@@ -8,7 +8,7 @@ from fastapi import Depends
 from sqlalchemy.exc import SQLAlchemyError
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from src.core.db import SessionDep
+from app.core.db import SessionDep
 
 
 class TransactionError(Exception):

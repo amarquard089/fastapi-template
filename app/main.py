@@ -3,7 +3,8 @@
 from fastapi import FastAPI
 from fastapi.responses import Response
 
-from src.settings import settings
+from app.api import api_router
+from app.settings import settings
 
 app = FastAPI(
     debug=settings.debug,
@@ -12,6 +13,8 @@ app = FastAPI(
     description=settings.app.description,
     version=settings.app.version,
 )
+
+app.include_router(api_router)
 
 
 @app.get("/health")

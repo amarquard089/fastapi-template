@@ -7,7 +7,7 @@ from fastapi import Depends
 from sqlalchemy.ext.asyncio import create_async_engine
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from src.settings import settings
+from app.settings import settings
 
 engine = create_async_engine(settings.db.async_url, echo=settings.debug)  # echo for logging SQL queries
 

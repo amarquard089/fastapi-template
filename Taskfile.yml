@@ -40,3 +40,8 @@ tasks:
     desc: Run test suite
     cmds:
       - uv run pytest
+
+  test:cov:
+    desc: Run tests with coverage reporting
+    cmds: 
+      - uv run pytest --cov=app --cov-report=html --cov-report=xml:coverage.xml tests/

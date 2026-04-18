@@ -2,19 +2,25 @@ from typing import Generator
 from unittest.mock import AsyncMock
 
 import pytest
+from app.main import app
 from fastapi.testclient import TestClient
 from sqlmodel.ext.asyncio.session import AsyncSession
-from src.main import app
 
 
 @pytest.fixture
-def db_session() -> Generator[AsyncMock, None, None]:
+def session_mock() -> AsyncMock:
+    """Provide an async database session mock for repository tests."""
+    return AsyncMock(spec=AsyncSession)
+
+
+@pytest.fixture
+def db_session(session_mock: AsyncMock) -> Generator[AsyncMock, None, None]:
     """Fixture for mocking the database session.
 
     Reference: https://sqlmodel.tiangolo.com/tutorial/fastapi/tests/#override-a-dependency"""
-    from src.core.db import get_engine
+    from app.core.db import get_engine
 
-    mock_session = AsyncMock(spec=AsyncSession)
+    mock_session = session_mock
 
     async def override():
         yield mock_session
