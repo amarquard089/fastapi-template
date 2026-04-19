@@ -17,59 +17,44 @@ env:
 jobs:
   test:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v6
 
       - name: Install uv
-        id: setup-uv
         uses: astral-sh/setup-uv@v7
         with:
           activate-environment: true
           enable-cache: true
 
-      - name: Install requirements
+      - name: Install dependencies
         run: uv sync
-
-      # - name: Test with pytest
-      #   run: |
-      #     uv run pytest -vv
 
       - name: Run tests with coverage
         run: |
-          uv run pytest --cov=app --cov-report=term-missing --cov-report=xml --cov-report=html --cov-fail-under=${{ env.COVERAGE_FAIL_UNDER }}
+          uv run pytest \
+            --cov=app \
+            --cov-report=term-missing:skip-covered \
+            --cov-report=xml \
+            --cov-report=html \
+            --cov-branch \
+            --cov-fail-under=${{ env.COVERAGE_FAIL_UNDER }}
 
-      - name: Add coverage summary to job output
-        if: always()
-        uses: irongut/CodeCoverageSummary@v1.3.0
-        with:
-          filename: coverage.xml
-          badge: true
-          format: markdown
-          indicators: true
-          output: both
-
-      - name: Append coverage summary to workflow summary
+      - name: Add coverage summary
         if: always()
         run: |
-          cat code-coverage-results.md >> "$GITHUB_STEP_SUMMARY"
+          echo "## Coverage Report" >> $GITHUB_STEP_SUMMARY
+          uv run coverage report >> $GITHUB_STEP_SUMMARY
 
-      - name: Add coverage summary as PR comment
-        if: github.event_name == 'pull_request' && always() && hashFiles('code-coverage-results.md') != ''
-        uses: marocchino/sticky-pull-request-comment@v2
-        with:
-          recreate: true
-          path: code-coverage-results.md
-
-      - name: Upload coverage xml report
+      - name: Upload coverage reports
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: coverage-xml
-          path: coverage.xml
+          name: coverage-reports
+          path: |
+            coverage.xml
+            htmlcov/
 
-      - name: Upload coverage html report
+      - name: Upload to Codecov
         if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-html
-          path: htmlcov/
+        uses: codecov/codecov-action@v4
