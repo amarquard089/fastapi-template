@@ -53,6 +53,7 @@ jobs:
         if: always()
         uses: codecov/codecov-action@v5
         with:
+          fail_ci_if_error: true
           token: ${{ secrets.CODECOV_TOKEN }}
           files: coverage.xml
           report_type: "coverage"
@@ -62,6 +63,7 @@ jobs:
         if: always()
         uses: codecov/codecov-action@v5
         with:
+          fail_ci_if_error: true
           token: ${{ secrets.CODECOV_TOKEN }}
           files: pytest.xml
           report_type: "test_results"
