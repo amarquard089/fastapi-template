@@ -51,10 +51,21 @@ jobs:
 
       - name: Upload coverage results to Codecov
         if: always()
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          files: coverage.xml,pytest.xml
+          files: coverage.xml
+          report_type: "coverage"
+          flags: unittests
+
+      - name: Upload test results to Codecov
+        if: always()
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: pytest.xml
+          report_type: "test_results"
+          flags: unittests
 
       - name: Upload coverage reports
         if: always()
