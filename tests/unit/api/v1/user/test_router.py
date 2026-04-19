@@ -50,7 +50,7 @@ async def test_create_user_success(test_app: TestClient, user_service_mock: Asyn
 
     response = test_app.post(
         "/api/v1/users/",
-        params={"first_name": "John", "last_name": "Doe", "email": "john.doe@example.com"},
+        json={"first_name": "John", "last_name": "Doe", "email": "john.doe@example.com"},
     )
 
     assert response.status_code == 200
@@ -68,7 +68,7 @@ async def test_create_user_validation_error_returns_400(test_app: TestClient, us
 
     response = test_app.post(
         "/api/v1/users/",
-        params={"first_name": "John", "last_name": "Doe", "email": "not-an-email"},
+        json={"first_name": "John", "last_name": "Doe", "email": "not-an-email"},
     )
 
     assert response.status_code == 400
@@ -83,7 +83,7 @@ async def test_update_user_success(test_app: TestClient, user_service_mock: Asyn
 
     response = test_app.put(
         f"/api/v1/users/{user_id}",
-        params={"first_name": "Jane", "email": "jane.doe@example.com"},
+        json={"first_name": "Jane", "email": "jane.doe@example.com"},
     )
 
     assert response.status_code == 200
@@ -101,7 +101,7 @@ async def test_update_user_not_found_returns_404(test_app: TestClient, user_serv
     user_id = uuid.uuid4()
     user_service_mock.update_user.side_effect = ValueError("user not found")
 
-    response = test_app.put(f"/api/v1/users/{user_id}", params={"first_name": "Jane"})
+    response = test_app.put(f"/api/v1/users/{user_id}", json={"first_name": "Jane"})
 
     assert response.status_code == 404
     assert response.json() == {"detail": "user not found"}
