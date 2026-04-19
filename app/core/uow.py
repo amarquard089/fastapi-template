@@ -44,8 +44,10 @@ class UnitOfWork:
                 await self.session.rollback()
             else:
                 await self.commit()
-        finally:
-            await self.session.close()
+        # finally:
+        #     await self.session.close()
+        except SQLAlchemyError as e:
+            raise TransactionError(e, f"Failed to manage transaction: {e!s}") from e
 
     async def commit(self) -> None:
         """Explicitly commit the transaction."""

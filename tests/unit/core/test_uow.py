@@ -13,7 +13,6 @@ async def test_uow_commits_and_closes_on_success(session_mock: AsyncMock) -> Non
 
     session_mock.commit.assert_awaited_once()
     session_mock.rollback.assert_not_called()
-    session_mock.close.assert_awaited_once()
     assert uow.is_committed
 
 
@@ -26,7 +25,6 @@ async def test_uow_rolls_back_and_closes_on_exception(session_mock: AsyncMock) -
 
     session_mock.commit.assert_not_called()
     session_mock.rollback.assert_awaited_once()
-    session_mock.close.assert_awaited_once()
 
 
 @pytest.mark.asyncio
@@ -74,4 +72,3 @@ async def test_get_uow_yields_unit_of_work_and_commits(session_mock: AsyncMock) 
         await gen.asend(None)
 
     session_mock.commit.assert_awaited_once()
-    session_mock.close.assert_awaited_once()

@@ -22,10 +22,10 @@ WORKDIR /app
 
 # Copy the virtual environment and source from builder
 COPY --from=builder /app/.venv /app/.venv
-COPY --from=builder /app/src /app/src
+COPY --from=builder /app/app /app/app
 
 ENV PATH="/app/.venv/bin:$PATH"
 
-EXPOSE 80
+EXPOSE 8000
 
-CMD ["fastapi", "run", "src/main.py", "--port", "80"]
+CMD ["fastapi", "run", "app/main.py", "--port", "8000"]

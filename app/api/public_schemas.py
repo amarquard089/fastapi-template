@@ -1,5 +1,6 @@
 """Data Transfer Objects (DTOs) for public-facing representations of domain entities."""
 
+import datetime
 import uuid
 
 from sqlmodel import SQLModel
@@ -14,8 +15,8 @@ class PublicEntity(SQLModel):
 class PublicTimestampMixin(SQLModel):
     """Mixin to add created_at and updated_at timestamps to public entities."""
 
-    created_at: str
-    updated_at: str
+    created_at: datetime.datetime
+    updated_at: datetime.datetime
 
 
 class PublicUserAuditMixin(PublicTimestampMixin):

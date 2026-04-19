@@ -55,6 +55,7 @@ class User(UserBase, Entity, TimestampMixin, table=True):
         if not self._valid_name(new_first_name):
             raise InvalidNameException("Invalid first name format")
         self.first_name = new_first_name
+        self.updated_at = self._current_time()
 
     def change_last_name(self, new_last_name: str) -> None:
         """Change the user's last name."""
@@ -63,6 +64,7 @@ class User(UserBase, Entity, TimestampMixin, table=True):
         if not self._valid_name(new_last_name):
             raise InvalidNameException("Invalid last name format")
         self.last_name = new_last_name
+        self.updated_at = self._current_time()
 
     def change_email(self, new_email: str) -> None:
         """Change the user's email."""
@@ -71,6 +73,7 @@ class User(UserBase, Entity, TimestampMixin, table=True):
         if not self._valid_email(new_email):
             raise InvalidEmailException("Invalid email format")
         self.email = new_email
+        self.updated_at = self._current_time()
 
     @staticmethod
     def _valid_name(name: str) -> bool:
