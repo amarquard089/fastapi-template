@@ -1,0 +1,71 @@
+name: Release
+
+permissions:
+  id-token: write
+  contents: write
+  pull-requests: write
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    outputs:
+      releases_created: ${{ steps.release.outputs.releases_created }}
+      version: ${{ steps.release.outputs.version }}
+      tag_name: ${{ steps.release.outputs.tag_name }}
+    steps:
+      - uses: googleapis/release-please-action@v4.4.1
+        id: release
+        with:
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
+
+  build_python_package:
+    name: Build and attach Python package
+    needs: release
+    if: ${{ needs.release.outputs.releases_created }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install uv
+        id: setup-uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          activate-environment: true
+          enable-cache: true
+
+      - name: Print the installed version
+        run: echo "Installed uv version is ${{ steps.setup-uv.outputs.uv-version }}"
+
+      - name: Install python 3.12
+        run: uv python install 3.12
+
+      - name: Build package
+        run: uv build
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-dist-${{ needs.release.outputs.tag_name }}
+          path: dist/*
+
+      - name: Attach artifacts to GitHub release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ needs.release.outputs.version }}
+          TAG_NAME: ${{ needs.release.outputs.tag_name }}
+        run: |
+          gh release upload ${TAG_NAME} dist/* --clobber
+
+      - name: Output release information
+        run: |
+          echo "Release created: ${{ needs.release.outputs.releases_created }}"
+          echo "Version: ${{ needs.release.outputs.version }}"
+          echo "Tag name: ${{ needs.release.outputs.tag_name }}"
+
