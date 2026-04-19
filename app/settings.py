@@ -1,5 +1,6 @@
 """Settings for the application."""
 
+import logging
 import os
 from typing import Literal
 
@@ -75,16 +76,16 @@ class Settings(BaseSettings):
 
     @computed_field
     @property
-    def log_level(self) -> str:
+    def log_level(self) -> int:
         """Determine the log level based on the environment."""
         if self.is_production:
-            return "INFO"
+            return logging.INFO
         elif self.is_development:
-            return "DEBUG"
+            return logging.DEBUG
         elif self.is_testing:
-            return "WARNING"
+            return logging.WARNING
         else:
-            return "INFO"
+            return logging.INFO
 
     @computed_field
     @property
