@@ -3,7 +3,7 @@
 import datetime
 import uuid
 
-from sqlmodel import Field, SQLModel
+from sqlmodel import DateTime, Field, SQLModel
 
 
 class Entity(SQLModel):
@@ -15,8 +15,18 @@ class Entity(SQLModel):
 class TimestampMixin(SQLModel):
     """Mixin to add created_at and updated_at timestamps to entities."""
 
-    created_at: datetime.datetime = Field(default_factory=lambda: datetime.datetime.now(tz=datetime.UTC))
-    updated_at: datetime.datetime = Field(default_factory=lambda: datetime.datetime.now(tz=datetime.UTC))
+    created_at: datetime.datetime = Field(
+        default_factory=lambda: datetime.datetime.now(tz=datetime.UTC),
+        sa_type=DateTime(timezone=True),  # ty:ignore[invalid-argument-type]
+    )
+    updated_at: datetime.datetime = Field(
+        default_factory=lambda: datetime.datetime.now(tz=datetime.UTC),
+        sa_type=DateTime(timezone=True),  # ty:ignore[invalid-argument-type]
+    )
+
+    def _current_time(self) -> datetime.datetime:
+        """Get the current time in UTC."""
+        return datetime.datetime.now(tz=datetime.UTC)
 
 
 class UserAuditMixin(TimestampMixin):
@@ -29,6 +39,6 @@ class UserAuditMixin(TimestampMixin):
 class SoftDeleteMixin(SQLModel):
     """Mixin to add soft delete functionality to entities."""
 
-    deleted_at: datetime.datetime | None = Field(default=None)
+    deleted_at: datetime.datetime | None = Field(default=None, sa_type=DateTime(timezone=True))  # ty:ignore[invalid-argument-type]
     deleted_by: uuid.UUID | None = Field(default=None)
     is_deleted: bool = Field(default=False)

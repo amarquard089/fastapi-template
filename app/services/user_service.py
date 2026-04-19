@@ -27,7 +27,6 @@ class UserService:
 
         """
         self.uow = unit_of_work
-        self.user_repository = UserRepository(self.uow.session)
 
     async def create_user(
         self,
@@ -49,14 +48,18 @@ class UserService:
             ValueError: If the user creation fails due to validation errors.
 
         """
-        try:
-            new_user = User.create(first_name=first_name, last_name=last_name, email=email)
-        except (EmptyNameException, EmptyEmailException, InvalidNameException, InvalidEmailException) as e:
-            raise ValueError(str(e)) from e
-        async with self.uow:
-            user = self.user_repository.create(new_user)
-            await self.uow.commit()
-        return user
+        async with self.uow as uow:
+            repo = UserRepository(uow.session)
+            try:
+                new_user = User.create(first_name=first_name, last_name=last_name, email=email)
+            except (EmptyNameException, EmptyEmailException, InvalidNameException, InvalidEmailException) as e:
+                raise ValueError(str(e)) from e
+            user = repo.create(new_user)
+
+            await uow.commit()
+            await uow.refresh(user)
+
+            return user
 
     async def get_user(self, user_id: uuid.UUID) -> User:
         """Retrieve a user by their ID.
@@ -71,10 +74,12 @@ class UserService:
             ValueError: If the user with the given ID is not found.
 
         """
-        user = await self.user_repository.get_by_id(user_id)
-        if not user:
-            raise ValueError(f"User with ID {user_id} not found")
-        return user
+        async with self.uow as uow:
+            repo = UserRepository(uow.session)
+            user = await repo.get_by_id(user_id)
+            if not user:
+                raise ValueError(f"User with ID {user_id} not found")
+            return user
 
     async def update_user(
         self, user_id: uuid.UUID, first_name: str | None = None, last_name: str | None = None, email: str | None = None
@@ -95,14 +100,14 @@ class UserService:
 
         """
         user = await self.get_user(user_id)
-        async with self.uow:
+        async with self.uow as uow:
             if first_name:
                 user.change_first_name(first_name)
             if last_name:
                 user.change_last_name(last_name)
             if email:
                 user.change_email(email)
-            await self.uow.commit()
+            await uow.commit()
         return user
 
     async def delete_user(self, user_id: uuid.UUID) -> None:
@@ -116,9 +121,10 @@ class UserService:
 
         """
         user = await self.get_user(user_id)
-        async with self.uow:
-            await self.user_repository.delete(user)
-            await self.uow.commit()
+        async with self.uow as uow:
+            repo = UserRepository(uow.session)
+            await repo.delete(user)
+            await uow.commit()
 
 
 def get_user_service(uow: UoWDep) -> UserService:

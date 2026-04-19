@@ -1,0 +1,56 @@
+# python stuff
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+.pytest_cache/
+.ruff_cache/
+htmlcov/
+.coverage
+.coverage.*
+.cache
+.python-version
+coverage.xml
+
+# virtual environment
+.venv/
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# IDEs and editors
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace 
+
+# Docker
+Dockerfile
+.dockerignore
+docker-compose.yml
+
+# Logs and databases
+logs/
+*.log
+*.sqlite3   
+
+# Misc
+*.env
+.env.*
+alembic.ini
+alembic/
+.github/
+.gitignore
+.pre-commit-config.yaml
+.release-please-manifest.json
+LICENSE
+README.md
+release-please-config.json
+Taskfile.yml
+
+
+

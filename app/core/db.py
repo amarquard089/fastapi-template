@@ -22,7 +22,7 @@ async def get_engine() -> AsyncGenerator[AsyncSession, None]:
         Iterator[AsyncGenerator[AsyncSession, None]]: An async generator yielding a database session.
 
     """
-    async with AsyncSession(engine) as sess:
+    async with AsyncSession(engine, expire_on_commit=False) as sess:
         yield sess
 
 

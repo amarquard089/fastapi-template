@@ -6,7 +6,7 @@
       "request": "launch",
       "program": "${file}",
       "console": "integratedTerminal",
-      "cwd": "${workspaceFolder}/backend"
+      "cwd": "${workspaceFolder}"
     },
     {
       "name": "Python Debugger: FastAPI",
@@ -14,7 +14,7 @@
       "request": "launch",
       "module": "fastapi",
       "args": ["dev", "--reload"],
-      "cwd": "${workspaceFolder}/backend"
+      "cwd": "${workspaceFolder}"
     }
   ]
 }

@@ -124,4 +124,3 @@ def test_get_user_service_returns_service(uow_mock: AsyncMock) -> None:
     service = get_user_service(uow_mock)
 
     assert isinstance(service, UserService)
-    assert isinstance(service.user_repository, UserRepository)

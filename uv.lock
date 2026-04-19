@@ -321,6 +321,7 @@ source = { virtual = "." }
 dependencies = [
     { name = "asyncpg" },
     { name = "fastapi", extra = ["standard"] },
+    { name = "greenlet" },
     { name = "pydantic" },
     { name = "pydantic-settings" },
     { name = "pytest-cov" },
@@ -340,6 +341,7 @@ dev = [
 requires-dist = [
     { name = "asyncpg", specifier = ">=0.31.0" },
     { name = "fastapi", extras = ["standard"], specifier = ">=0.136.0" },
+    { name = "greenlet", specifier = ">=3.4.0" },
     { name = "pydantic", specifier = ">=2.13.2" },
     { name = "pydantic-settings", specifier = ">=2.13.1" },
     { name = "pytest-cov", specifier = ">=7.1.0" },
