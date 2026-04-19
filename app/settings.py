@@ -1,5 +1,6 @@
 """Settings for the application."""
 
+import os
 from typing import Literal
 
 from pydantic import BaseModel, Field, computed_field
@@ -95,7 +96,7 @@ class Settings(BaseSettings):
         env_prefix="FASTAPI_TEMPLATE__",
         env_nested_delimiter="__",
         extra="ignore",
-        env_file=".env",
+        env_file=os.getenv("FASTAPI_TEMPLATE__ENV_FILE", ".env"),
     )
 
 
