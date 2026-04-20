@@ -14,11 +14,8 @@ class App(BaseModel):
     """Application settings."""
 
     title: str = "FastAPI Template"
-    summary: str = "An opinionated FastAPI template for building production-ready applications."
-    description: str = (
-        "An opinionated FastAPI template for building production-ready applications. "
-        "Includes features like async SQLAlchemy, Alembic, and more."
-    )
+    summary: str = "An opinionated FastAPI template."
+    description: str = "An opinionated FastAPI template. Includes features like async SQLAlchemy, Alembic, and more."
 
     @computed_field
     @property
